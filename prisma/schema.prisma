@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id           Int            @id @default(autoincrement())
+  name         String
+  sub_category sub_category[]
+}
+
+model part {
+  id           Int            @id @default(autoincrement())
+  number       Int
+  description  String
+  price        Float
+  product_part product_part[]
+}
+
+model product {
+  id                Int             @id @default(autoincrement())
+  name              String
+  description       String
+  id_subcategory    Int
+  id_product_family Int?
+  model             String
+  product_family    product_family? @relation(fields: [id_product_family], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sub_category      sub_category    @relation(fields: [id_subcategory], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product_image     product_image[]
+  product_part      product_part[]
+}
+
+model product_family {
+  id      Int       @id @default(autoincrement())
+  name    String
+  product product[]
+}
+
+model product_image {
+  id         Int     @id @default(autoincrement())
+  url        String
+  id_product Int
+  product    product @relation(fields: [id_product], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model product_part {
+  product_id Int
+  part_id    Int
+  id         Int     @id @default(autoincrement())
+  part       part    @relation(fields: [part_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  product    product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model sub_category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  id_category Int
+  product     product[]
+  category    category  @relation(fields: [id_category], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
