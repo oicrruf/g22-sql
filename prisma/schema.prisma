@@ -25,6 +25,7 @@ model product {
   id                Int             @id @default(autoincrement())
   name              String
   description       String
+  sku               String
   id_subcategory    Int
   id_product_family Int?
   model             String
